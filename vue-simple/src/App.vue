@@ -12,9 +12,9 @@
 
         <div class="ext-container">
             <div class="int-container">
-
-                <div v-for="obj in objects.objs" class="entity">
-                    <input type="text" class="entity-header" value="">{{ obj.name }}
+<!-- v-for="obj in xx" -->
+                <div  class="entity">
+                    <input type="text" class="entity-header" value="">
                     
                     <div class="entity-field">
                         <input type="text" class="entity-field-name" value="Field">
@@ -30,34 +30,42 @@
                     </div>
 
                     <div class="entity-add-field">
-                        <div class="entity-plus">
+                        <div class="entity-field-plus">
                             +
                         </div>
                     </div>
                 </div>
 
             </div>
+
+<!--          <div  class="entity-plus" >+</div>
+-->
         </div>
+
     </div>
 </template>
 
 <script>
 
-const objects = {
-    objs: [
-          {
-            name: "Users",
-            fields: [{field: "name", type: "string"},
-                     {field: "surname", type: "string"}
-            ]
-          }
-          ]
-    }
 
 export default {
+
   name: 'app',
   data () {
+
     return {}
+
+    const xx = {
+        objs: [
+              {
+                name: "Users",
+                fields: [{field: "name", type: "string"},
+                        {field: "surname", type: "string"}
+                ]
+              }
+              ]
+        }
+
   }
 }
 </script>
@@ -195,7 +203,15 @@ body, html {
     background-color: #283593; 
     cursor: pointer;
 }
-
+.entity-plus {
+    color: white;
+    background-color: #3f51b5;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 1.5rem;
+    text-align: center;
+    padding-top: 1rem;
+}
 
 .entity-field:not(:last-child) {
     height: 4rem;
@@ -206,8 +222,6 @@ body, html {
     cursor: pointer;
 }
 .entity-field-name {
-
-
     font-size: 1.125rem;
     font-weight: normal;
     color: black;
