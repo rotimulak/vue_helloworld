@@ -14,36 +14,49 @@
                 <div class="entity" v-for="obj in objs">
                     <input type="text" class="entity-header" v-bind:value="obj.name">
 
-                    <div class="entity-field" >
-                        <input type="text" class="entity-field-name" value="Field"> <select size="1"
-                            class="entity-field-type">
-                        <option selected value="int">Int</option>
-                        <option v-for="obj in objs" value="float">Float</option>
-                        <!--<option value="str">String</option>-->
-                        <!--<option value="array">[Make it array]</option>-->
-                        <!--<option value="entity2">Entity 2</option>-->
-                        <!--<option value="addentity">New entity</option>-->
-                        <!--<option value="advanced">advanced</option>-->
+                    <div v-for="entity in obj.fields" class="entity-field">
+                        <input type="text" class="entity-field-name" v-bind:value="entity.field"> 
+                        <select size="1" class="entity-field-type">
+                            <option v-for="reftype in reftypes" class="dropdown"> {{reftype}} </option>
+                            <option v-for="refentity in objs" class="dropdown"> {{refentity.name}} </option>
+                            <option value="makearray" class="dropdown">[Make it array]</option>
+                            <option value="createentity" class="dropdown">Crate New Entity</option>
+
                     </select>
                     </div>
 
                     <div class="entity-add-field">
-                        <div class="entity-field-plus">
+                        <div class="entity-field-plus" v-on:click="fun2(obj)">
                             +
                         </div>
                     </div>
                 </div>
 
+            <div  class="entity-plus" >+</div>
             </div>
 
-            <!--          <div  class="entity-plus" >+</div>
-            -->
+            <div id="properties">
+                <form>
+                    <p v-for="rt in reftypes"><input type="radio" name=""> {{rt}} </p>
+                </form>
+            </div>
+
         </div>
+
 
     </div>
 </template>
 
 <script>
+
+    // new Tether({
+    //     element: document.getElementByID(""),
+    //     target: greenBox,
+    //     attachment: 'top left',
+    //     targetAttachment: 'bottom left'
+    // });
+
+
 
     export default {
 
@@ -51,6 +64,9 @@
         data() {
 
             return {
+
+                reftypes: [ 'String', 'Int', 'Float'],
+
                 objs: [
                     {
                         name: "Users",
@@ -60,14 +76,24 @@
                     },
                     {
                         name: "xxx",
-                        fields: [{field: "name", type: "string"},
-                            {field: "surname", type: "string"}
+                        fields: [{field: "car", type: "string"},
+                            {field: "power", type: "int"}
                         ]
                     }
                 ]
             }
-
+        },
+        methods: {
+            // fun() {
+            //     return 5;
+            // },
+            fun2: function(object) {
+                console.log("going to add");
+                console.log(object)
+                object.fields.push( {field: "", type: ""} )
+            } 
         }
+
     }
 </script>
 
@@ -82,6 +108,18 @@
 
     .page {
         height: 100vh;
+    }
+
+    .dropdown {
+        font-size: 1rem;
+        padding: 1rem;
+    }
+
+    #properties {
+        background-color: white;
+        padding: 0.25rem 1rem;
+        border-radius: 6px;
+        box-shadow: 0px 3px 3px rgba(0,0,0,0.32);
     }
 
     .app-header {
@@ -214,11 +252,10 @@
     .entity-plus {
         color: white;
         background-color: #3f51b5;
-        width: 3rem;
-        height: 3rem;
+        padding: 0.825rem 1.25rem;
         border-radius: 1.5rem;
         text-align: center;
-        padding-top: 1rem;
+        margin-left:1rem;
     }
 
     .entity-field:not(:last-child) {
