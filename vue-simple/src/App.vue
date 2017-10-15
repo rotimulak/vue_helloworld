@@ -11,18 +11,18 @@
 
         <div class="ext-container">
             <div class="int-container">
-                <div class="entity" v-for="obj in objs">
+                <div class="entity" v-for="obj in objs" v-bind:id="'entity-' + obj">
                     <input type="text" class="entity-header" v-bind:value="obj.name">
 
-                    <div v-for="entity in obj.fields" class="entity-field">
+                    <div v-for="entity in obj.fields" class="entity-field" v-bind:id="entity">
                         <input type="text" class="entity-field-name" v-bind:value="entity.field"> 
-                        <select size="1" class="entity-field-type">
+                        <div class="entity-field-type" v-on:click="showproperty(entity, obj)">{{entity.type}}</div>
+                        <!-- <select size="1" class="entity-field-type">
                             <option v-for="reftype in reftypes" class="dropdown"> {{reftype}} </option>
                             <option v-for="refentity in objs" class="dropdown"> {{refentity.name}} </option>
                             <option value="makearray" class="dropdown">[Make it array]</option>
                             <option value="createentity" class="dropdown">Crate New Entity</option>
-
-                    </select>
+                        </select> -->
                     </div>
 
                     <div class="entity-add-field">
@@ -37,7 +37,7 @@
 
             <div id="properties">
                 <form>
-                    <p v-for="rt in reftypes"><input type="radio" name=""> {{rt}} </p>
+                    <p v-for="rt in reftypes"><input type="radio" name="standarttypes" v-bind:value="rt"> {{rt}} </p>
                 </form>
             </div>
 
@@ -48,15 +48,6 @@
 </template>
 
 <script>
-
-    // new Tether({
-    //     element: document.getElementByID(""),
-    //     target: greenBox,
-    //     attachment: 'top left',
-    //     targetAttachment: 'bottom left'
-    // });
-
-
 
     export default {
 
@@ -91,7 +82,19 @@
                 console.log("going to add");
                 console.log(object)
                 object.fields.push( {field: "", type: ""} )
-            } 
+            },
+            showproperty: function(entity, obj) {
+                console.log(entity,obj)
+
+                new Tether({
+                    element: document.getElementById(entity),
+                    target:  document.getElementById("properties"),
+                    attachment: 'top left',
+                    targetAttachment: 'bottom left'
+                });
+
+
+            }
         }
 
     }
@@ -289,14 +292,16 @@
         font-size: 0.6875rem;
         font-weight: normal;
         color: #90a4ae;
-        height: 1.75rem;
-        padding: 1rem;
+        /* height: 1.75rem; */
+        /* padding: 1rem; */
+        padding: 0.25rem 1rem;
         text-transform: uppercase;
         letter-spacing: 1px;
         border: 0;
         background: transparent;
-        margin: 0 0.5rem;
-        width: calc(100% - 1rem);
+        /* margin: 0 0.5rem; */
+        /* width: calc(100% - 1rem); */
+        width: calc(100%);
     }
 
     .entity-field-type:focus {
