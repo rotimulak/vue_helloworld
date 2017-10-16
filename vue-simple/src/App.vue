@@ -1,5 +1,7 @@
 <template>
     <div class="page">
+        <div id="dimmer" v-on:click="hideproperty()">
+        </div>
         <div class="app-header">
             <div class="app-name">
                 Tree DB Schema Editor
@@ -11,34 +13,56 @@
 
         <div class="ext-container">
             <div class="int-container">
-                <div class="entity" v-bind:id="'object-' + obj.name" v-for="obj in objs">
+                <div class="entity" v-bind:id="'object-' + obj.name" v-for="obj in entities">
                     <input type="text" class="entity-header" v-bind:value="obj.name">
 
                     <div v-for="entity in obj.fields" class="entity-field" v-bind:id="entity.field">
                         <input type="text" class="entity-field-name" v-bind:value="entity.field"> 
-                        <div class="entity-field-type" v-on:click="showproperty(entity, obj)">{{entity.type}}</div>
-                        <!-- <select size="1" class="entity-field-type">
-                            <option v-for="reftype in reftypes" class="dropdown"> {{reftype}} </option>
-                            <option v-for="refentity in objs" class="dropdown"> {{refentity.name}} </option>
-                            <option value="makearray" class="dropdown">[Make it array]</option>
-                            <option value="createentity" class="dropdown">Crate New Entity</option>
-                        </select> -->
+                        <div class="entity-field-type" v-on:click="showproperty(entity, obj)" v-bind:id="'type-' + entity.field + '-' + entity.type">{{entity.type}}</div>
                     </div>
 
                     <div class="entity-add-field">
-                        <div class="entity-field-plus" v-on:click="fun2(obj)">
+                        <div class="entity-field-plus" v-on:click="addfield(obj)">
                             +
                         </div>
                     </div>
                 </div>
 
-            <div  class="entity-plus" >+</div>
+                <div class="entity-plus" v-on:click="addentity()">
+                    +
+                </div>
             </div>
 
             <div id="properties">
+                <div id="p-name"></div>
                 <form>
-                    <p v-for="rt in reftypes"><input type="radio" name="standarttypes" v-bind:value="rt"> {{rt}} </p>
+                    <p v-for="rt in reftypes">
+                        <input type="radio" 
+                            v-bind:id="'rt-' + rt" 
+                            v-bind:value="rt" 
+                            name="selecttype"
+                            v-model="reftypechecked"
+                            >
+                        <label v-bind:for="'rt-' + rt"> {{rt}}</label>
+                    </p>
+                    <hr>
+                    <p v-for="refentity in entities">
+                        <input type="radio" 
+                            v-bind:id="'3rd-'+refentity.name" 
+                            v-bind:value="refentity.name" 
+                            <!-- v-model="reftypechecked" -->
+                            name="selecttype">
+                        <label v-bind:for="'3rd-'+refentity.name"> {{refentity.name}} </label> 
+                    </p>
+                        <!-- <select size="1" class="entity-field-type">
+                            <option value="makearray" class="dropdown">[Make it array]</option>
+                            <option value="createentity" class="dropdown">Crate New Entity</option>
+                        </select> -->
                 </form>
+                <div id="p-fun" 
+                    <!-- v-on:click="deletefield(pentity, pfield)" -->
+                    >Delete entity</div>
+
             </div>
 
         </div>
@@ -53,47 +77,76 @@
 
         name: 'app',
         data() {
-
+           
             return {
 
-                reftypes: [ 'String', 'Int', 'Float'],
+                reftypechecked: [],
+                pentity, 
+                pfield,
 
-                objs: [
+                reftypes: [ 'string', 'int', 'float'],
+
+                entities: [
                     {
-                        name: "Users",
+                        name: "Drivers",
                         fields: [{field: "name", type: "string"},
-                            {field: "surname", type: "string"}
+                                 {field: "surname", type: "string"}
                         ]
                     },
                     {
-                        name: "xxx",
+                        name: "Fleet",
                         fields: [{field: "car", type: "string"},
-                            {field: "power", type: "int"}
+                                 {field: "power", type: "int"}
                         ]
                     }
                 ]
+            }
+        },
+        watch: {
+            reftypechecked (v) {
+                console.log(v)
             }
         },
         methods: {
             // fun() {
             //     return 5;
             // },
-            fun2: function(object) {
-                console.log("going to add");
-                console.log(object)
-                object.fields.push( {field: "", type: ""} )
+
+            addfield: function(object) {
+                object.fields.push( {field: "", type: "string"} )
+                console.log('huray')
             },
+            deletefield: function(pentity, pfield) {
+                console.log( {field: "", type: "string"} )
+            },
+
+            hideproperty: function() {
+                document.getElementById("properties").style.display='none';
+                document.getElementById("dimmer").style.visibility='hidden';
+                document.getElementById("dimmer").style.opacity = "0";
+            },
+
             showproperty: function(entity, obj) {
-                console.log(entity,obj)
-
+                // console.log(entity,obj)
+                this.reftypechecked = entity.type;
+                this.pentity = entity;
+                this.pfield = entity.field;
+                console.log(this.reftypechecked, entity.type);
+                document.getElementById("properties").style.display = "block";
+                document.getElementById("dimmer").style.visibility = "visible";
+                document.getElementById("dimmer").style.opacity = "1";
                 new Tether({
-                    element: document.getElementById("properties"),
-                    target:  document.getElementById(entity),
-                    attachment: 'top left',
-                    targetAttachment: 'bottom left'
+                    element: $("#properties"),
+                    target:  $("#type-"+entity.field + '-' + entity.type),
+                    attachment: 'middle left',
+                    targetAttachment: 'top right'
                 });
+                document.getElementById("p-name").innerText = entity.field;
+            },
 
-
+            addentity: function() {
+                console.log('huray')
+                this.entities.push( { name: "new" , fields: [] } )
             }
         }
 
@@ -107,6 +160,19 @@
         padding: 0;
         font-size: 16px;
         font-family: 'Open Sans', sans-serif;
+    }
+    #dimmer {
+        visibility: hidden;
+        opacity: 0;
+
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background-color: rgba(0,0,0,0.7);
+        z-index: 10;
+        transition: ease-in-out 0.25s;
     }
 
     .page {
@@ -123,6 +189,9 @@
         padding: 0.25rem 1rem;
         border-radius: 6px;
         box-shadow: 0px 3px 3px rgba(0,0,0,0.32);
+        /* visibility: hidden; */
+        display: none;
+        z-index: 20;
     }
 
     .app-header {
@@ -192,6 +261,8 @@
         -webkit-align-items: center;
         -ms-flex-align: center;
         align-items: center;
+
+        overflow: auto;
     }
 
     .int-container {
@@ -259,7 +330,14 @@
         border-radius: 1.5rem;
         text-align: center;
         margin-left:1rem;
+        box-shadow: 0px 2.5px 5px rgba(0, 0, 0, 0.36);
     }
+    .entity-plus:hover {
+        background-color: #283593;
+        cursor: pointer;
+    }
+
+
 
     .entity-field:not(:last-child) {
         height: 4rem;
@@ -301,7 +379,7 @@
         background: transparent;
         /* margin: 0 0.5rem; */
         /* width: calc(100% - 1rem); */
-        width: calc(100%);
+        /* width: calc(100%); */
     }
 
     .entity-field-type:focus {
