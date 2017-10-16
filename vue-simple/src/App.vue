@@ -11,10 +11,10 @@
 
         <div class="ext-container">
             <div class="int-container">
-                <div class="entity" v-for="obj in objs" v-bind:id="'entity-' + obj">
+                <div class="entity" v-bind:id="'object-' + obj.name" v-for="obj in objs">
                     <input type="text" class="entity-header" v-bind:value="obj.name">
 
-                    <div v-for="entity in obj.fields" class="entity-field" v-bind:id="entity">
+                    <div v-for="entity in obj.fields" class="entity-field" v-bind:id="entity.field">
                         <input type="text" class="entity-field-name" v-bind:value="entity.field"> 
                         <div class="entity-field-type" v-on:click="showproperty(entity, obj)">{{entity.type}}</div>
                         <!-- <select size="1" class="entity-field-type">
@@ -87,8 +87,8 @@
                 console.log(entity,obj)
 
                 new Tether({
-                    element: document.getElementById(entity),
-                    target:  document.getElementById("properties"),
+                    element: document.getElementById("properties"),
+                    target:  document.getElementById(entity),
                     attachment: 'top left',
                     targetAttachment: 'bottom left'
                 });
