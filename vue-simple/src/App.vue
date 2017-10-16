@@ -50,7 +50,7 @@
                         <input type="radio" 
                             v-bind:id="'3rd-'+refentity.name" 
                             v-bind:value="refentity.name" 
-                            <!-- v-model="reftypechecked" -->
+                            v-model="reftypechecked"
                             name="selecttype">
                         <label v-bind:for="'3rd-'+refentity.name"> {{refentity.name}} </label> 
                     </p>
@@ -59,9 +59,8 @@
                             <option value="createentity" class="dropdown">Crate New Entity</option>
                         </select> -->
                 </form>
-                <div id="p-fun" 
-                    <!-- v-on:click="deletefield(pentity, pfield)" -->
-                    >Delete entity</div>
+                <div id="p-fun" v-on:click="deletefield(pentity, pfield)">Delete entity</div>
+                    <!--  -->
 
             </div>
 
@@ -81,8 +80,8 @@
             return {
 
                 reftypechecked: [],
-                pentity, 
-                pfield,
+                pentity: {}, 
+                pfield: {},
 
                 reftypes: [ 'string', 'int', 'float'],
 
@@ -90,13 +89,15 @@
                     {
                         name: "Drivers",
                         fields: [{field: "name", type: "string"},
-                                 {field: "surname", type: "string"}
+                                 {field: "surname", type: "string"},
+                                 {field: "fleet", type: "Fleet"}
                         ]
                     },
                     {
                         name: "Fleet",
                         fields: [{field: "car", type: "string"},
-                                 {field: "power", type: "int"}
+                                 {field: "power", type: "int"},
+                                 {field: "driver", type: "Drivers"}
                         ]
                     }
                 ]
@@ -117,7 +118,16 @@
                 console.log('huray')
             },
             deletefield: function(pentity, pfield) {
-                console.log( {field: "", type: "string"} )
+
+                var ientity = this.entities.indexOf(pentity);
+                if (ientity > -1) {
+                    var ifield = this.entities(ientity).fields.indexOf(pfield)
+                    if (ifield > -1) {
+                        this.entities(ientity).fields.splice(ifield, 1);
+                    }
+                }
+                console.log( pentity, pfield, ientity, ifield )
+
             },
 
             hideproperty: function() {
